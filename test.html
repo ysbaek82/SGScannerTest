@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Hardware Information</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            background: #667eea;
+            color: white;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd6;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2::before {
+            font-size: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .drive-item {
+            grid-column: span 2;
+        }
+
+        .drive-bar {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .drive-bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s ease;
+        }
+
+        .drive-bar-fill.low {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .drive-bar-fill.medium {
+            background: linear-gradient(90deg, #ffc107, #fd7e14);
+        }
+
+        .drive-bar-fill.high {
+            background: linear-gradient(90deg, #fd7e14, #dc3545);
+        }
+
+        .drive-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .gpu-item {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .module-list {
+            margin-top: 15px;
+        }
+
+        .module-item {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .api-url {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .drive-item,
+            .gpu-item {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PC Hardware Information</h1>
+
+        <div class="api-url">
+            API Server: <strong>http://127.0.0.1:8080/hardware-info/</strong>
+        </div>
+
+        <div id="status" class="status loading">
+            <span class="loading-spinner"></span>
+            Connecting to Hardware Info Service...
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="fetchAll()">Refresh All</button>
+            <button class="btn" onclick="fetchComponent('os')">OS Info</button>
+            <button class="btn" onclick="fetchComponent('cpu')">CPU</button>
+            <button class="btn" onclick="fetchComponent('memory')">Memory</button>
+            <button class="btn" onclick="fetchComponent('disk')">Disk</button>
+            <button class="btn" onclick="fetchComponent('gpu')">GPU</button>
+        </div>
+
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8080/hardware-info';
+
+        async function fetchAll() {
+            setStatus('loading', 'Loading hardware information...');
+            try {
+                const response = await fetch(API_BASE + '/');
+                if (!response.ok) throw new Error(`HTTP ${response.status}: Service unavailable`);
+                const data = await response.json();
+                setStatus('success', 'Connected to Hardware Info Service');
+                renderAllInfo(data);
+            } catch (error) {
+                setStatus('error', `Error: ${error.message}. Make sure the service is running.`);
+                document.getElementById('content').innerHTML = '';
+            }
+        }
+
+        async function fetchComponent(component) {
+            setStatus('loading', `Loading ${component.toUpperCase()} information...`);
+            try {
+                const response = await fetch(`${API_BASE}/${component}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: Service unavailable`);
+                const data = await response.json();
+                setStatus('success', `${component.toUpperCase()} information loaded`);
+                renderComponent(component, data);
+            } catch (error) {
+                setStatus('error', `Error: ${error.message}. Make sure the service is running.`);
+            }
+        }
+
+        function setStatus(type, message) {
+            const status = document.getElementById('status');
+            status.className = 'status ' + type;
+            if (type === 'loading') {
+                status.innerHTML = `<span class="loading-spinner"></span>${message}`;
+            } else {
+                status.textContent = message;
+            }
+        }
+
+        function renderAllInfo(data) {
+            let html = '';
+            html += renderOS(data.os);
+            html += renderCPU(data.cpu);
+            html += renderMemory(data.memory);
+            html += renderDisk(data.disk);
+            html += renderGPU(data.gpu);
+            document.getElementById('content').innerHTML = html;
+        }
+
+        function renderComponent(component, data) {
+            const renderers = {
+                os: renderOS,
+                cpu: renderCPU,
+                memory: renderMemory,
+                disk: renderDisk,
+                gpu: renderGPU
+            };
+            document.getElementById('content').innerHTML = renderers[component](data);
+        }
+
+        function renderOS(os) {
+            return `
+                <div class="card">
+                    <h2>Operating System</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">OS Name</div>
+                            <div class="info-value">${os.name || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Version</div>
+                            <div class="info-value">${os.version || 'N/A'} (Build ${os.build_number || 'N/A'})</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Architecture</div>
+                            <div class="info-value">${os.architecture || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Computer Name</div>
+                            <div class="info-value">${os.computer_name || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Manufacturer</div>
+                            <div class="info-value">${os.manufacturer || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Model</div>
+                            <div class="info-value">${os.model || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">System Type</div>
+                            <div class="info-value">${os.system_type || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Platform</div>
+                            <div class="info-value">${os.platform_details?.system || 'N/A'} ${os.platform_details?.release || ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCPU(cpu) {
+            return `
+                <div class="card">
+                    <h2>CPU Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item" style="grid-column: span 2;">
+                            <div class="info-label">Processor Name</div>
+                            <div class="info-value">${cpu.name || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Manufacturer</div>
+                            <div class="info-value">${cpu.manufacturer || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Cores</div>
+                            <div class="info-value">${cpu.cores_physical || 0} Physical / ${cpu.cores_logical || 0} Logical</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Max Clock Speed</div>
+                            <div class="info-value">${((cpu.max_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Current Speed</div>
+                            <div class="info-value">${((cpu.current_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">L2 Cache</div>
+                            <div class="info-value">${cpu.l2_cache_size_kb ? (cpu.l2_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">L3 Cache</div>
+                            <div class="info-value">${cpu.l3_cache_size_kb ? (cpu.l3_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Current Usage</div>
+                            <div class="info-value">${cpu.cpu_usage_percent || 0}%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMemory(mem) {
+            let modulesHtml = '';
+            if (mem.modules && mem.modules.length > 0) {
+                modulesHtml = `
+                    <div class="module-list">
+                        <div class="info-label" style="margin-bottom: 10px;">Memory Modules</div>
+                        ${mem.modules.map((m, i) => `
+                            <div class="module-item">
+                                Module ${i + 1}: ${m.capacity_gb || 0} GB
+                                ${m.speed_mhz ? `@ ${m.speed_mhz} MHz` : ''}
+                                ${m.manufacturer ? `(${m.manufacturer})` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="card">
+                    <h2>Memory (RAM)</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Total RAM</div>
+                            <div class="info-value">${mem.total_gb || 0} GB</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Available</div>
+                            <div class="info-value">${mem.available_gb || 0} GB</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Used</div>
+                            <div class="info-value">${mem.used_gb || 0} GB (${mem.percent_used || 0}%)</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Modules Installed</div>
+                            <div class="info-value">${mem.modules?.length || 0} module(s)</div>
+                        </div>
+                    </div>
+                    ${modulesHtml}
+                </div>
+            `;
+        }
+
+        function renderDisk(disk) {
+            let drivesHtml = (disk.logical_drives || []).map(d => {
+                const percent = d.percent_used || 0;
+                let barClass = 'low';
+                if (percent > 80) barClass = 'high';
+                else if (percent > 60) barClass = 'medium';
+
+                return `
+                    <div class="info-item drive-item">
+                        <div class="info-label">${d.drive_letter || 'N/A'} Drive (${d.file_system || 'N/A'})</div>
+                        <div class="info-value">
+                            ${d.free_gb || 0} GB free of ${d.total_gb || 0} GB
+                        </div>
+                        <div class="drive-bar">
+                            <div class="drive-bar-fill ${barClass}" style="width: ${percent}%"></div>
+                            <span class="drive-bar-text">${percent}% used</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            let physicalHtml = '';
+            if (disk.physical_disks && disk.physical_disks.length > 0) {
+                physicalHtml = disk.physical_disks.map(d => `
+                    <div class="info-item" style="grid-column: span 2;">
+                        <div class="info-label">Physical Disk</div>
+                        <div class="info-value">${d.model || 'N/A'}</div>
+                        <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                            Size: ${d.size_gb || 0} GB | Interface: ${d.interface_type || 'N/A'} | Type: ${d.media_type || 'N/A'}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            return `
+                <div class="card">
+                    <h2>Disk Drives</h2>
+                    <div class="info-grid">
+                        ${drivesHtml}
+                        ${physicalHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGPU(gpu) {
+            let gpusHtml = (gpu.graphics_cards || []).map(g => `
+                <div class="info-item gpu-item">
+                    <div class="info-label">${g.adapter_compatibility || 'Graphics Card'}</div>
+                    <div class="info-value" style="font-size: 18px; margin-bottom: 10px;">${g.name || 'N/A'}</div>
+                    <div style="font-size: 13px; color: #666;">
+                        <div>Driver: ${g.driver_version || 'N/A'}</div>
+                        <div>Resolution: ${g.current_resolution || 'N/A'} @ ${g.refresh_rate_hz || 0}Hz</div>
+                        ${g.adapter_ram_mb ? `<div>Video RAM: ${(g.adapter_ram_mb / 1024).toFixed(1)} GB</div>` : ''}
+                        <div>Status: ${g.status || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="card">
+                    <h2>Graphics Cards (${gpu.count || 0})</h2>
+                    <div class="info-grid">
+                        ${gpusHtml || '<div class="info-item">No graphics cards detected</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Auto-fetch on page load
+        window.onload = fetchAll;
+    </script>
+</body>
+</html>
