@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC Hardware Information</title>
+    <title>STOVEScanner - PC Hardware Information</title>
     <style>
         * {
             box-sizing: border-box;
@@ -252,15 +252,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>PC Hardware Information</h1>
+        <h1>STOVEScanner - PC Hardware Information</h1>
 
         <div class="api-url">
-            API Server: <strong>http://127.0.0.1:8080/hardware-info/</strong>
+            API Server: <strong>http://127.0.0.1:8080/stovescanner/</strong>
         </div>
 
         <div id="status" class="status loading">
             <span class="loading-spinner"></span>
-            Connecting to Hardware Info Service...
+            Connecting to STOVEScanner Service...
         </div>
 
         <div class="btn-group">
@@ -270,13 +270,15 @@
             <button class="btn" onclick="fetchComponent('memory')">Memory</button>
             <button class="btn" onclick="fetchComponent('disk')">Disk</button>
             <button class="btn" onclick="fetchComponent('gpu')">GPU</button>
+            <button class="btn" onclick="window.location.href='stovescanner://start'" style="background: #27ae60; color: white; font-weight: bold;" title="웹에서 STOVEScanner 실행 (프로토콜 등록 필요)">Launch STOVEScanner</button>
+            <button class="btn" onclick="shutdownServer()" style="background: #e74c3c; color: white; font-weight: bold;">Shutdown Server</button>
         </div>
 
         <div id="content"></div>
     </div>
 
     <script>
-        const API_BASE = 'http://127.0.0.1:8080/hardware-info';
+        const API_BASE = 'http://127.0.0.1:8080/stovescanner';
 
         async function fetchAll() {
             setStatus('loading', 'Loading hardware information...');
@@ -284,7 +286,7 @@
                 const response = await fetch(API_BASE + '/');
                 if (!response.ok) throw new Error(`HTTP ${response.status}: Service unavailable`);
                 const data = await response.json();
-                setStatus('success', 'Connected to Hardware Info Service');
+                setStatus('success', 'Connected to STOVEScanner Service');
                 renderAllInfo(data);
             } catch (error) {
                 setStatus('error', `Error: ${error.message}. Make sure the service is running.`);
@@ -530,6 +532,78 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Server Shutdown Function
+        async function shutdownServer() {
+            if (!confirm('서버를 종료하시겠습니까?\n\n이 작업은 되돌릴 수 없으며, 서버가 종료되면 이 페이지도 더 이상 사용할 수 없습니다.')) {
+                return;
+            }
+            
+            setStatus('loading', '서버 종료 중...');
+            try {
+                const response = await fetch('http://127.0.0.1:8080/stovescanner/shutdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                setStatus('success', result.message || '서버 종료 신호가 전송되었습니다.');
+                
+                // 서버가 종료되면 연결이 끊어지므로 일정 시간 후 확인
+                setTimeout(() => {
+                    setStatus('error', '서버가 종료되었습니다. 페이지를 새로고침하거나 서버를 다시 시작하세요.');
+                    document.getElementById('content').innerHTML = `
+                        <div class="card">
+                            <h2>서버 종료됨</h2>
+                            <div style="padding: 20px; text-align: center;">
+                                <p style="font-size: 16px; margin-bottom: 20px;">서버가 성공적으로 종료되었습니다.</p>
+                                <p style="color: #666; margin-bottom: 20px;">서버를 다시 시작하려면 터미널에서 다음 명령을 실행하세요:</p>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace; margin-bottom: 20px;">
+                                    python src/main.py
+                                </div>
+                                <p style="color: #666; font-size: 14px;">또는</p>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace;">
+                                    dist\\STOVEScanner.exe
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }, 2000);
+            } catch (error) {
+                // 네트워크 오류는 서버가 종료되었을 가능성이 높음
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    setStatus('success', '서버 종료 신호가 전송되었습니다. 서버가 종료 중입니다...');
+                    setTimeout(() => {
+                        setStatus('error', '서버가 종료되었습니다. 페이지를 새로고침하거나 서버를 다시 시작하세요.');
+                        document.getElementById('content').innerHTML = `
+                            <div class="card">
+                                <h2>서버 종료됨</h2>
+                                <div style="padding: 20px; text-align: center;">
+                                    <p style="font-size: 16px; margin-bottom: 20px;">서버가 성공적으로 종료되었습니다.</p>
+                                    <p style="color: #666; margin-bottom: 20px;">서버를 다시 시작하려면 터미널에서 다음 명령을 실행하세요:</p>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace; margin-bottom: 20px;">
+                                        python src/main.py
+                                    </div>
+                                    <p style="color: #666; font-size: 14px;">또는</p>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace;">
+                                        dist\\STOVEScanner.exe
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }, 2000);
+                } else {
+                    setStatus('error', `오류: ${error.message}`);
+                }
+            }
         }
 
         // Auto-fetch on page load
