@@ -30,74 +30,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .status {
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status.loading {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            background: #667eea;
-            color: white;
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5a6fd6;
-        }
-
         .card {
             background: white;
             border-radius: 12px;
@@ -211,31 +143,9 @@
             font-size: 14px;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        .api-url {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-            margin-bottom: 20px;
         }
 
         @media (max-width: 768px) {
@@ -248,366 +158,429 @@
                 grid-column: span 1;
             }
         }
+
+        /* 사양조사 영역 */
+        .spec-survey-section {
+            margin-bottom: 30px;
+        }
+
+        .spec-survey-section h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .spec-table th,
+        .spec-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .spec-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .spec-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .spec-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .spec-table .col-item { width: 18%; }
+        .spec-table .col-min { width: 27%; }
+        .spec-table .col-mine { width: 27%; }
+        .spec-table .col-max { width: 28%; }
+
+        .spec-ok { color: #28a745; font-weight: 600; }
+        .spec-fail { color: #dc3545; font-weight: 600; }
+        .spec-pending { color: #6c757d; font-style: italic; }
+
+        .btn-survey {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-survey:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.5);
+        }
+
+        /* 로딩 오버레이 */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-popup {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .loading-popup .popup-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-popup h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .loading-popup p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .popup-dynamic {
+            margin-top: 10px;
+        }
+
+        .loading-spinner-large {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        /* 남은 시간 카운트다운 */
+        .countdown-wrap {
+            margin-top: 20px;
+        }
+
+        .countdown-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .countdown-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .countdown-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+
+        .install-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .install-link:hover {
+            opacity: 0.9;
+        }
+
+        .retry-btn {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 16px;
+        }
+
+        .retry-btn:hover {
+            background: #667eea;
+            color: white;
+        }
     </style>
 </head>
 <body>
+    <!-- 로딩/설치 안내 오버레이 -->
+    <div id="loadingOverlay" class="loading-overlay hidden" style="display: none;">
+        <div id="loadingPopup" class="loading-popup">
+            <div id="popupContent"></div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>STOVEScanner - PC Hardware Information</h1>
 
-        <div class="api-url">
-            API Server: <strong>http://127.0.0.1:8080/stovescanner/</strong>
+        <!-- 사양조사 페이지 항목 영역 -->
+        <div class="spec-survey-section">
+            <h2>📋 사양 비교</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th class="col-item">항목</th>
+                        <th class="col-min">최소 사양</th>
+                        <th class="col-mine">내 PC 사양</th>
+                        <th class="col-max">권장 사양</th>
+                    </tr>
+                </thead>
+                <tbody id="specTableBody">
+                    <tr>
+                        <td>OS</td>
+                        <td>Windows 10 64-bit</td>
+                        <td id="spec-os" class="spec-pending">조사 필요</td>
+                        <td>Windows 11 64-bit</td>
+                    </tr>
+                    <tr>
+                        <td>CPU</td>
+                        <td>Intel Core i5 / AMD Ryzen 5</td>
+                        <td id="spec-cpu" class="spec-pending">조사 필요</td>
+                        <td>Intel Core i7 / AMD Ryzen 7</td>
+                    </tr>
+                    <tr>
+                        <td>RAM</td>
+                        <td>8 GB</td>
+                        <td id="spec-ram" class="spec-pending">조사 필요</td>
+                        <td>16 GB</td>
+                    </tr>
+                    <tr>
+                        <td>GPU</td>
+                        <td>DirectX 11 호환</td>
+                        <td id="spec-gpu" class="spec-pending">조사 필요</td>
+                        <td>DirectX 12 호환, 4GB VRAM</td>
+                    </tr>
+                    <tr>
+                        <td>저장공간</td>
+                        <td>50 GB</td>
+                        <td id="spec-disk" class="spec-pending">조사 필요</td>
+                        <td>100 GB (SSD 권장)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn-survey" onclick="StovScanner_API.startSpecSurvey()">내 사양 조사하기</button>
+            </div>
         </div>
 
-        <div id="status" class="status loading">
-            <span class="loading-spinner"></span>
-            Connecting to STOVEScanner Service...
-        </div>
-
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="fetchAll()">Refresh All</button>
-            <button class="btn" onclick="fetchComponent('os')">OS Info</button>
-            <button class="btn" onclick="fetchComponent('cpu')">CPU</button>
-            <button class="btn" onclick="fetchComponent('memory')">Memory</button>
-            <button class="btn" onclick="fetchComponent('disk')">Disk</button>
-            <button class="btn" onclick="fetchComponent('gpu')">GPU</button>
-            <button class="btn" onclick="window.location.href='stovescanner://start'" style="background: #27ae60; color: white; font-weight: bold;" title="웹에서 STOVEScanner 실행 (프로토콜 등록 필요)">Launch STOVEScanner</button>
-            <button class="btn" onclick="shutdownServer()" style="background: #e74c3c; color: white; font-weight: bold;">Shutdown Server</button>
-        </div>
-
+        <!-- 상세 정보 영역: HTML이 데이터를 읽어 각 요소에 바인딩 -->
         <div id="content"></div>
     </div>
 
+    <script src="stovescanner-api.js"></script>
     <script>
-        const API_BASE = 'http://127.0.0.1:8080/stovescanner';
+        // === 통합 팝업 (HTML): 로딩 → checkHealth 실패 시 설치 링크·다시시도 동적 추가 ===
+        window.StovScanner_showPopup = function (maxWaitMs) {
+            const overlay = document.getElementById('loadingOverlay');
+            const popup = document.getElementById('popupContent');
+            if (!popup || !overlay) return;
+            const sec = (maxWaitMs / 1000).toFixed(2);
+            popup.innerHTML = `
+                <div class="popup-icon">⏳</div>
+                <h3>내 사양 조사 중</h3>
+                <p>STOVEScanner를 실행하고 PC 사양을 수집하고 있습니다.<br>잠시만 기다려 주세요.</p>
+                <div id="popupDynamic" class="popup-dynamic">
+                    <div class="loading-spinner-large"></div>
+                    <div class="countdown-wrap">
+                        <div id="countdownText" class="countdown-text">${sec}초 남음</div>
+                        <div class="countdown-bar">
+                            <div id="countdownBarFill" class="countdown-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            overlay.style.display = 'flex';
+            overlay.classList.remove('hidden');
+        };
 
-        async function fetchAll() {
-            setStatus('loading', 'Loading hardware information...');
-            try {
-                const response = await fetch(API_BASE + '/');
-                if (!response.ok) throw new Error(`HTTP ${response.status}: Service unavailable`);
-                const data = await response.json();
-                setStatus('success', 'Connected to STOVEScanner Service');
-                renderAllInfo(data);
-            } catch (error) {
-                setStatus('error', `Error: ${error.message}. Make sure the service is running.`);
-                document.getElementById('content').innerHTML = '';
+        window.StovScanner_updateCountdown = function (remainingMs) {
+            const textEl = document.getElementById('countdownText');
+            const barEl = document.getElementById('countdownBarFill');
+            if (textEl) textEl.textContent = remainingMs > 0 ? (remainingMs / 1000).toFixed(2) + '초 남음' : '연결 시도 중...';
+            if (barEl && window.StovScanner_API) {
+                const percent = remainingMs > 0 ? (remainingMs / StovScanner_API.config.maxWaitMs) * 100 : 0;
+                barEl.style.width = percent + '%';
             }
-        }
+        };
 
-        async function fetchComponent(component) {
-            setStatus('loading', `Loading ${component.toUpperCase()} information...`);
-            try {
-                const response = await fetch(`${API_BASE}/${component}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}: Service unavailable`);
-                const data = await response.json();
-                setStatus('success', `${component.toUpperCase()} information loaded`);
-                renderComponent(component, data);
-            } catch (error) {
-                setStatus('error', `Error: ${error.message}. Make sure the service is running.`);
+        window.StovScanner_setPopupInstallState = function (installUrl) {
+            const dynamic = document.getElementById('popupDynamic');
+            if (!dynamic) return;
+            const icon = document.querySelector('#popupContent .popup-icon');
+            const title = document.querySelector('#popupContent h3');
+            const msg = document.querySelector('#popupContent p');
+            if (icon) icon.textContent = '⚠️';
+            if (title) title.textContent = 'STOVEScanner를 찾을 수 없습니다';
+            if (msg) msg.innerHTML = '로컬 서버에 연결할 수 없습니다. STOVEScanner가 설치되어 있지 않거나 실행 중이지 않을 수 있습니다.<br><span style="font-size: 13px; color: #888;">아래 버튼을 클릭하여 STOVEScanner를 설치해 주세요.</span>';
+            dynamic.innerHTML = `
+                <a href="${installUrl}" class="install-link" download="STOVEScanner.exe">STOVEScanner 설치하기</a>
+                <div><button class="retry-btn" onclick="StovScanner_API.startSpecSurvey()">다시 시도</button></div>
+            `;
+        };
+
+        window.StovScanner_hidePopup = function () {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                setTimeout(function () { overlay.style.display = 'none'; }, 300);
             }
-        }
+        };
 
-        function setStatus(type, message) {
-            const status = document.getElementById('status');
-            status.className = 'status ' + type;
-            if (type === 'loading') {
-                status.innerHTML = `<span class="loading-spinner"></span>${message}`;
-            } else {
-                status.textContent = message;
-            }
-        }
+        // === 데이터 바인딩: HTML이 데이터를 읽어 각 요소에 표시 ===
+        window.StovScanner_renderContent = function (data) {
+            const content = document.getElementById('content');
+            if (!content || !data) return;
 
-        function renderAllInfo(data) {
+            const v = (val, def) => val != null && val !== '' ? val : (def || 'N/A');
+            const os = data.os || {};
+            const cpu = data.cpu || {};
+            const mem = data.memory || {};
+            const disk = data.disk || {};
+            const gpu = data.gpu || {};
+
             let html = '';
-            html += renderOS(data.os);
-            html += renderCPU(data.cpu);
-            html += renderMemory(data.memory);
-            html += renderDisk(data.disk);
-            html += renderGPU(data.gpu);
-            document.getElementById('content').innerHTML = html;
-        }
 
-        function renderComponent(component, data) {
-            const renderers = {
-                os: renderOS,
-                cpu: renderCPU,
-                memory: renderMemory,
-                disk: renderDisk,
-                gpu: renderGPU
-            };
-            document.getElementById('content').innerHTML = renderers[component](data);
-        }
-
-        function renderOS(os) {
-            return `
+            // OS 카드
+            html += `
                 <div class="card">
                     <h2>Operating System</h2>
                     <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">OS Name</div>
-                            <div class="info-value">${os.name || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Version</div>
-                            <div class="info-value">${os.version || 'N/A'} (Build ${os.build_number || 'N/A'})</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Architecture</div>
-                            <div class="info-value">${os.architecture || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Computer Name</div>
-                            <div class="info-value">${os.computer_name || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Manufacturer</div>
-                            <div class="info-value">${os.manufacturer || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Model</div>
-                            <div class="info-value">${os.model || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">System Type</div>
-                            <div class="info-value">${os.system_type || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Platform</div>
-                            <div class="info-value">${os.platform_details?.system || 'N/A'} ${os.platform_details?.release || ''}</div>
-                        </div>
+                        <div class="info-item"><div class="info-label">OS Name</div><div class="info-value">${v(os.name)}</div></div>
+                        <div class="info-item"><div class="info-label">Version</div><div class="info-value">${v(os.version)} (Build ${v(os.build_number)})</div></div>
+                        <div class="info-item"><div class="info-label">Architecture</div><div class="info-value">${v(os.architecture)}</div></div>
+                        <div class="info-item"><div class="info-label">Computer Name</div><div class="info-value">${v(os.computer_name)}</div></div>
+                        <div class="info-item"><div class="info-label">Manufacturer</div><div class="info-value">${v(os.manufacturer)}</div></div>
+                        <div class="info-item"><div class="info-label">Model</div><div class="info-value">${v(os.model)}</div></div>
+                        <div class="info-item"><div class="info-label">System Type</div><div class="info-value">${v(os.system_type)}</div></div>
+                        <div class="info-item"><div class="info-label">Platform</div><div class="info-value">${v(os.platform_details?.system)} ${v(os.platform_details?.release)}</div></div>
                     </div>
                 </div>
             `;
-        }
 
-        function renderCPU(cpu) {
-            return `
+            // CPU 카드
+            html += `
                 <div class="card">
                     <h2>CPU Information</h2>
                     <div class="info-grid">
-                        <div class="info-item" style="grid-column: span 2;">
-                            <div class="info-label">Processor Name</div>
-                            <div class="info-value">${cpu.name || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Manufacturer</div>
-                            <div class="info-value">${cpu.manufacturer || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Cores</div>
-                            <div class="info-value">${cpu.cores_physical || 0} Physical / ${cpu.cores_logical || 0} Logical</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Max Clock Speed</div>
-                            <div class="info-value">${((cpu.max_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Current Speed</div>
-                            <div class="info-value">${((cpu.current_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">L2 Cache</div>
-                            <div class="info-value">${cpu.l2_cache_size_kb ? (cpu.l2_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">L3 Cache</div>
-                            <div class="info-value">${cpu.l3_cache_size_kb ? (cpu.l3_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Current Usage</div>
-                            <div class="info-value">${cpu.cpu_usage_percent || 0}%</div>
-                        </div>
+                        <div class="info-item" style="grid-column: span 2;"><div class="info-label">Processor Name</div><div class="info-value">${v(cpu.name)}</div></div>
+                        <div class="info-item"><div class="info-label">Manufacturer</div><div class="info-value">${v(cpu.manufacturer)}</div></div>
+                        <div class="info-item"><div class="info-label">Cores</div><div class="info-value">${cpu.cores_physical || 0} Physical / ${cpu.cores_logical || 0} Logical</div></div>
+                        <div class="info-item"><div class="info-label">Max Clock Speed</div><div class="info-value">${((cpu.max_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div></div>
+                        <div class="info-item"><div class="info-label">Current Speed</div><div class="info-value">${((cpu.current_clock_speed_mhz || 0) / 1000).toFixed(2)} GHz</div></div>
+                        <div class="info-item"><div class="info-label">L2 Cache</div><div class="info-value">${cpu.l2_cache_size_kb ? (cpu.l2_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div></div>
+                        <div class="info-item"><div class="info-label">L3 Cache</div><div class="info-value">${cpu.l3_cache_size_kb ? (cpu.l3_cache_size_kb / 1024).toFixed(1) + ' MB' : 'N/A'}</div></div>
+                        <div class="info-item"><div class="info-label">Current Usage</div><div class="info-value">${cpu.cpu_usage_percent || 0}%</div></div>
                     </div>
                 </div>
             `;
-        }
 
-        function renderMemory(mem) {
-            let modulesHtml = '';
+            // Memory 카드
+            let memModules = '';
             if (mem.modules && mem.modules.length > 0) {
-                modulesHtml = `
-                    <div class="module-list">
-                        <div class="info-label" style="margin-bottom: 10px;">Memory Modules</div>
-                        ${mem.modules.map((m, i) => `
-                            <div class="module-item">
-                                Module ${i + 1}: ${m.capacity_gb || 0} GB
-                                ${m.speed_mhz ? `@ ${m.speed_mhz} MHz` : ''}
-                                ${m.manufacturer ? `(${m.manufacturer})` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                memModules = '<div class="module-list"><div class="info-label" style="margin-bottom: 10px;">Memory Modules</div>' +
+                    mem.modules.map((m, i) => `<div class="module-item">Module ${i + 1}: ${m.capacity_gb || 0} GB${m.speed_mhz ? ' @ ' + m.speed_mhz + ' MHz' : ''}${m.manufacturer ? ' (' + m.manufacturer + ')' : ''}</div>`).join('') +
+                    '</div>';
             }
-
-            return `
+            html += `
                 <div class="card">
                     <h2>Memory (RAM)</h2>
                     <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Total RAM</div>
-                            <div class="info-value">${mem.total_gb || 0} GB</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Available</div>
-                            <div class="info-value">${mem.available_gb || 0} GB</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Used</div>
-                            <div class="info-value">${mem.used_gb || 0} GB (${mem.percent_used || 0}%)</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Modules Installed</div>
-                            <div class="info-value">${mem.modules?.length || 0} module(s)</div>
-                        </div>
+                        <div class="info-item"><div class="info-label">Total RAM</div><div class="info-value">${mem.total_gb || 0} GB</div></div>
+                        <div class="info-item"><div class="info-label">Available</div><div class="info-value">${mem.available_gb || 0} GB</div></div>
+                        <div class="info-item"><div class="info-label">Used</div><div class="info-value">${mem.used_gb || 0} GB (${mem.percent_used || 0}%)</div></div>
+                        <div class="info-item"><div class="info-label">Modules Installed</div><div class="info-value">${mem.modules?.length || 0} module(s)</div></div>
                     </div>
-                    ${modulesHtml}
+                    ${memModules}
                 </div>
             `;
-        }
 
-        function renderDisk(disk) {
-            let drivesHtml = (disk.logical_drives || []).map(d => {
-                const percent = d.percent_used || 0;
-                let barClass = 'low';
-                if (percent > 80) barClass = 'high';
-                else if (percent > 60) barClass = 'medium';
-
-                return `
-                    <div class="info-item drive-item">
-                        <div class="info-label">${d.drive_letter || 'N/A'} Drive (${d.file_system || 'N/A'})</div>
-                        <div class="info-value">
-                            ${d.free_gb || 0} GB free of ${d.total_gb || 0} GB
-                        </div>
-                        <div class="drive-bar">
-                            <div class="drive-bar-fill ${barClass}" style="width: ${percent}%"></div>
-                            <span class="drive-bar-text">${percent}% used</span>
-                        </div>
-                    </div>
-                `;
+            // Disk 카드
+            const drives = disk.logical_drives || [];
+            let drivesHtml = drives.map(d => {
+                const pct = d.percent_used || 0;
+                const barClass = pct > 80 ? 'high' : pct > 60 ? 'medium' : 'low';
+                return `<div class="info-item drive-item">
+                    <div class="info-label">${v(d.drive_letter)} Drive (${v(d.file_system)})</div>
+                    <div class="info-value">${d.free_gb || 0} GB free of ${d.total_gb || 0} GB</div>
+                    <div class="drive-bar"><div class="drive-bar-fill ${barClass}" style="width: ${pct}%"></div><span class="drive-bar-text">${pct}% used</span></div>
+                </div>`;
             }).join('');
-
-            let physicalHtml = '';
-            if (disk.physical_disks && disk.physical_disks.length > 0) {
-                physicalHtml = disk.physical_disks.map(d => `
-                    <div class="info-item" style="grid-column: span 2;">
-                        <div class="info-label">Physical Disk</div>
-                        <div class="info-value">${d.model || 'N/A'}</div>
-                        <div style="font-size: 13px; color: #666; margin-top: 5px;">
-                            Size: ${d.size_gb || 0} GB | Interface: ${d.interface_type || 'N/A'} | Type: ${d.media_type || 'N/A'}
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            return `
+            const physical = disk.physical_disks || [];
+            let physicalHtml = physical.map(p => `<div class="info-item" style="grid-column: span 2;"><div class="info-label">Physical Disk</div><div class="info-value">${v(p.model)}</div><div style="font-size: 13px; color: #666; margin-top: 5px;">Size: ${p.size_gb || 0} GB | Interface: ${v(p.interface_type)} | Type: ${v(p.media_type)}</div></div>`).join('');
+            html += `
                 <div class="card">
                     <h2>Disk Drives</h2>
-                    <div class="info-grid">
-                        ${drivesHtml}
-                        ${physicalHtml}
-                    </div>
+                    <div class="info-grid">${drivesHtml}${physicalHtml}</div>
                 </div>
             `;
-        }
 
-        function renderGPU(gpu) {
-            let gpusHtml = (gpu.graphics_cards || []).map(g => `
+            // GPU 카드
+            const gpuCards = gpu.graphics_cards || [];
+            const gpusHtml = gpuCards.length ? gpuCards.map(g => `
                 <div class="info-item gpu-item">
-                    <div class="info-label">${g.adapter_compatibility || 'Graphics Card'}</div>
-                    <div class="info-value" style="font-size: 18px; margin-bottom: 10px;">${g.name || 'N/A'}</div>
+                    <div class="info-label">${v(g.adapter_compatibility, 'Graphics Card')}</div>
+                    <div class="info-value" style="font-size: 18px; margin-bottom: 10px;">${v(g.name)}</div>
                     <div style="font-size: 13px; color: #666;">
-                        <div>Driver: ${g.driver_version || 'N/A'}</div>
-                        <div>Resolution: ${g.current_resolution || 'N/A'} @ ${g.refresh_rate_hz || 0}Hz</div>
-                        ${g.adapter_ram_mb ? `<div>Video RAM: ${(g.adapter_ram_mb / 1024).toFixed(1)} GB</div>` : ''}
-                        <div>Status: ${g.status || 'N/A'}</div>
+                        <div>Driver: ${v(g.driver_version)}</div>
+                        <div>Resolution: ${v(g.current_resolution)} @ ${g.refresh_rate_hz || 0}Hz</div>
+                        ${g.adapter_ram_mb ? '<div>Video RAM: ' + (g.adapter_ram_mb / 1024).toFixed(1) + ' GB</div>' : ''}
+                        <div>Status: ${v(g.status)}</div>
                     </div>
                 </div>
-            `).join('');
-
-            return `
+            `).join('') : '<div class="info-item">No graphics cards detected</div>';
+            html += `
                 <div class="card">
                     <h2>Graphics Cards (${gpu.count || 0})</h2>
-                    <div class="info-grid">
-                        ${gpusHtml || '<div class="info-item">No graphics cards detected</div>'}
-                    </div>
+                    <div class="info-grid">${gpusHtml}</div>
                 </div>
             `;
-        }
 
-        // Server Shutdown Function
-        async function shutdownServer() {
-            if (!confirm('서버를 종료하시겠습니까?\n\n이 작업은 되돌릴 수 없으며, 서버가 종료되면 이 페이지도 더 이상 사용할 수 없습니다.')) {
-                return;
-            }
-            
-            setStatus('loading', '서버 종료 중...');
-            try {
-                const response = await fetch('http://127.0.0.1:8080/stovescanner/shutdown', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.detail || `HTTP ${response.status}`);
-                }
-                
-                const result = await response.json();
-                setStatus('success', result.message || '서버 종료 신호가 전송되었습니다.');
-                
-                // 서버가 종료되면 연결이 끊어지므로 일정 시간 후 확인
-                setTimeout(() => {
-                    setStatus('error', '서버가 종료되었습니다. 페이지를 새로고침하거나 서버를 다시 시작하세요.');
-                    document.getElementById('content').innerHTML = `
-                        <div class="card">
-                            <h2>서버 종료됨</h2>
-                            <div style="padding: 20px; text-align: center;">
-                                <p style="font-size: 16px; margin-bottom: 20px;">서버가 성공적으로 종료되었습니다.</p>
-                                <p style="color: #666; margin-bottom: 20px;">서버를 다시 시작하려면 터미널에서 다음 명령을 실행하세요:</p>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace; margin-bottom: 20px;">
-                                    python src/main.py
-                                </div>
-                                <p style="color: #666; font-size: 14px;">또는</p>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace;">
-                                    dist\\STOVEScanner.exe
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }, 2000);
-            } catch (error) {
-                // 네트워크 오류는 서버가 종료되었을 가능성이 높음
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    setStatus('success', '서버 종료 신호가 전송되었습니다. 서버가 종료 중입니다...');
-                    setTimeout(() => {
-                        setStatus('error', '서버가 종료되었습니다. 페이지를 새로고침하거나 서버를 다시 시작하세요.');
-                        document.getElementById('content').innerHTML = `
-                            <div class="card">
-                                <h2>서버 종료됨</h2>
-                                <div style="padding: 20px; text-align: center;">
-                                    <p style="font-size: 16px; margin-bottom: 20px;">서버가 성공적으로 종료되었습니다.</p>
-                                    <p style="color: #666; margin-bottom: 20px;">서버를 다시 시작하려면 터미널에서 다음 명령을 실행하세요:</p>
-                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace; margin-bottom: 20px;">
-                                        python src/main.py
-                                    </div>
-                                    <p style="color: #666; font-size: 14px;">또는</p>
-                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; font-family: monospace;">
-                                        dist\\STOVEScanner.exe
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }, 2000);
-                } else {
-                    setStatus('error', `오류: ${error.message}`);
-                }
-            }
-        }
-
-        // Auto-fetch on page load
-        window.onload = fetchAll;
+            content.innerHTML = html;
+        };
     </script>
 </body>
 </html>
