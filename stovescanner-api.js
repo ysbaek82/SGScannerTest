@@ -1,15 +1,10 @@
 /**
  * StovScanner_API - STOVEScanner 웹 연동 백그라운드 API
  * 모든 백그라운드 로직을 세분화된 함수 형태로 제공.
- * UI 요소는 HTML에서 관리하며, 본 API는 데이터 조회/캐시/로직만 담당.
+ * UI 요소는 HTML에서 관리하며, 본 API는 데이터 조회/로직만 담당.
  */
 (function (global) {
     'use strict';
-
-    const CACHE_KEYS = {
-        CACHED_DATA: 'stovescanner_cachedData',
-        CACHED_AT: 'stovescanner_cachedAt',
-    };
 
     const StovScanner_API = {
         config: {
@@ -18,7 +13,6 @@
             maxWaitMs: 10000,
             minPopupDisplayMs: 1500,
             installUrl: 'https://ysbaek82.github.io/SGScannerTest/STOVEScanner-win-Setup.exe',
-            cacheMaxAgeMs: 30 * 24 * 60 * 60 * 1000,
             overlayId: 'loadingOverlay',
             popupContentId: 'popupContent',
             contentId: 'content',
@@ -45,35 +39,6 @@
         _hidePopup() {
             if (typeof window.StovScanner_hidePopup === 'function') {
                 window.StovScanner_hidePopup();
-            }
-        },
-
-        /** 캐시에서 데이터 조회 (30일 유효) */
-        getCachedData() {
-            try {
-                const raw = localStorage.getItem(CACHE_KEYS.CACHED_DATA);
-                const cachedAt = parseInt(localStorage.getItem(CACHE_KEYS.CACHED_AT) || '0', 10);
-                if (!raw || !cachedAt) return null;
-                if (Date.now() - cachedAt > this.config.cacheMaxAgeMs) {
-                    localStorage.removeItem(CACHE_KEYS.CACHED_DATA);
-                    localStorage.removeItem(CACHE_KEYS.CACHED_AT);
-                    return null;
-                }
-                return { data: JSON.parse(raw), cachedAt };
-            } catch {
-                return null;
-            }
-        },
-
-        /** 캐시에 데이터 저장 */
-        saveToCache(data) {
-            try {
-                if (!data) return false;
-                localStorage.setItem(CACHE_KEYS.CACHED_DATA, JSON.stringify(data));
-                localStorage.setItem(CACHE_KEYS.CACHED_AT, String(Date.now()));
-                return true;
-            } catch {
-                return false;
             }
         },
 
@@ -152,32 +117,22 @@
 
         /**
          * 내 사양 조사하기 - 메인 진입점
-         * 캐시 조회 → 캐시 있으면 표시 후 백그라운드 갱신
-         * 캐시 없으면 프로토콜 실행 → 폴링 → 성공 시 표시, 실패 시 설치 팝업
+         * 프로토콜 실행 → 폴링 → 성공 시 표시, 실패 시 설치 팝업
          */
         async startSpecSurvey() {
-            const cached = this.getCachedData();
-            if (cached) {
-                this.updateSpecTable(cached.data);
-                this._notifyDataReady(cached.data);
-                if (await this.checkHealth()) {
-                    const data = await this.fetchSpecData();
-                    if (data) {
-                        this.saveToCache(data);
-                        this.updateSpecTable(data);
-                        this._notifyDataReady(data);
-                    }
-                }
-                return;
-            }
-
             this._showPopup();
-            // 팝업이 화면에 그려진 후 프로토콜 실행 (즉시 실행 시 브라우저가 팝업을 그리기 전에 다른 동작 수행)
+            // 팝업이 화면에 그려진 후 카운트다운·프로토콜 실행 (즉시 실행 시 브라우저가 팝업을 그리기 전에 다른 동작 수행)
             await new Promise(r => requestAnimationFrame(() => setTimeout(r, 150)));
-            window.location.href = 'stovescanner://start';
 
             const startTime = Date.now();
             this._tick(startTime);
+
+            // location.href보다 iframe 사용: 페이지 네비게이션 없이 프로토콜 호출 → 카운트다운이 중단되지 않음
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'stovescanner://start';
+            document.body.appendChild(iframe);
+            setTimeout(() => { try { document.body.removeChild(iframe); } catch (_) {} }, 2000);
 
             while (Date.now() - startTime < this.config.maxWaitMs) {
                 if (await this.checkHealth()) {
@@ -190,7 +145,6 @@
                     this._hidePopup();
                     const data = await this.fetchSpecData();
                     if (data) {
-                        this.saveToCache(data);
                         this.updateSpecTable(data);
                         this._notifyDataReady(data);
                     }
